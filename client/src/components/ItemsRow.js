@@ -14,7 +14,9 @@ import {
 import Item from "./Item";
 import BuyItem from "./BuyItem";
 
-export default function ItemsRow() {
+export default function ItemsRow(props) {
+  const { sendInventoryToDB, testVar } = props;
+
   const [state, dispatch] = useGlobalContext();
 
   const juicers = state?.juicers || [];
@@ -40,27 +42,30 @@ export default function ItemsRow() {
         duration: state.gameVariables.makeJuiceTime,
       },
     });
+    sendInventoryToDB(state);
+    console.log("testVar is: ");
+    console.log(testVar);
   };
 
-  const handleJuicerSellBtnPressed = ({ _id, duration }) => {
-    if (state.appleCount < state.gameVariables.makeJuiceApplesUsed) {
-      return;
-    }
+  // const handleJuicerSellBtnPressed = ({ _id, duration }) => {
+  //   if (state.appleCount < state.gameVariables.makeJuiceApplesUsed) {
+  //     return;
+  //   }
 
-    const now = new Date();
-    try {
-      dispatch({
-        type: UPDATE_JUICER,
-        payload: { _id, now, duration: 10 },
-      });
-      dispatch({
-        type: SELL_JUICE,
-      });
-      dispatch({
-        type: APPLES_USED_FOR_PRODUCT,
-      });
-    } catch (error) {}
-  };
+  //   const now = new Date();
+  //   try {
+  //     dispatch({
+  //       type: UPDATE_JUICER,
+  //       payload: { _id, now, duration: 10 },
+  //     });
+  //     dispatch({
+  //       type: SELL_JUICE,
+  //     });
+  //     dispatch({
+  //       type: APPLES_USED_FOR_PRODUCT,
+  //     });
+  //   } catch (error) {}
+  // };
 
   return (
     <div>
@@ -73,8 +78,10 @@ export default function ItemsRow() {
                 return (
                   <div key={i} className="item-box">
                     <Item
-                      handleJuicerSellBtnPressed={handleJuicerSellBtnPressed}
+                      // handleJuicerSellBtnPressed={handleJuicerSellBtnPressed}
+                      _id={juicer._id}
                       juicer={juicer}
+                      dispatchParent={dispatch}
                       // appleCount={state.appleCount}
                       // useIsMount={useIsMount}
                       // money={state.money}
