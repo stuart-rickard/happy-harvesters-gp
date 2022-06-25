@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../utils/GlobalState";
 import { HARVEST_TREE, UPDATE_TREE_TIMER } from "../utils/actions";
-// import { UPDATE_USER } from "../utils/mutations";
 import { getTimeRemaining, useInterval } from "../utils/helpers";
 
 import treeBare from "../assets/images/tree-short.svg";
@@ -12,13 +11,9 @@ export default function Tree({
   _id,
   dispatchParent,
   setCheckOrchardReadyToHarvest,
+  sendInventoryToDB,
 }) {
   const [state, dispatch] = useGlobalContext();
-  const {
-    // trees,
-    gameVariables,
-  } = state;
-  // const resetTreeTimerSeconds = gameVariables.appleGrowTime;
   const resetTreeTimerSeconds = tree.duration;
 
   const [timeRemaining, setTime] = useState(resetTreeTimerSeconds);
@@ -27,7 +22,6 @@ export default function Tree({
   useEffect(() => {
     if (isReady) {
       setCheckOrchardReadyToHarvest(true);
-      // console.log("useEffect check orchard");
     }
   });
 
@@ -47,11 +41,11 @@ export default function Tree({
       },
     });
     setTime(tree.duration);
+    sendInventoryToDB(state);
   }
 
   useInterval(() => {
     if (isReady) {
-      // console.log("tree id " + _id + " is ready");
       // return;
     }
     setTime(getTimeRemaining(tree.startedAtTime, tree.duration));
